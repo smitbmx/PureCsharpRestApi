@@ -25,8 +25,7 @@ namespace PureCsharpRestApi
     {
         public string Page { get; set; }
 
-        //[JsonProperty("per_page")]
-        [System.Runtime.Serialization.DataMember(Name = "per_page")]
+        [JsonProperty("per_page")]
         public int PerPage { get; set; }
 
         public int Total { get; set; }
@@ -105,7 +104,7 @@ namespace PureCsharpRestApi
             IEnumerable<Movie> movies = GetMoviesAsync().GetAwaiter().GetResult();
             Console.WriteLine($"Retrieved {movies.Count()} movies.");
 
-            Console.WriteLine("Hello World!");
+            Console.ReadKey();
         }
     }
 }
