@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace FootballMatches
@@ -27,37 +30,67 @@ namespace FootballMatches
         public string Competition { get; set; }
 
         [JsonProperty("year")]
-        public int Year { get; set; }
+        public string Year { get; set; }
 
         [JsonProperty("round")]
-        public int Round { get; set; }
+        public string Round { get; set; }
 
         [JsonProperty("team1")]
-        public int Team1 { get; set; }
+        public string Team1 { get; set; }
 
         [JsonProperty("team2")]
-        public int Team2 { get; set; }
+        public string Team2 { get; set; }
 
         [JsonProperty("team1goals")]
-        public int Team1Goals { get; set; }
+        public string Team1Goals { get; set; }
 
         [JsonProperty("team2goals")]
-        public int Team2Goals { get; set; }
+        public string Team2Goals { get; set; }
     }
 
     class Program
     {
-        public static int getNumDraws(int year)
+        public static async Task<int> getNumDrawsAsync(int year)
         {
             int res = 0;
-            //https://jsonmock.hackerrank.com/api/football_matches?year=2016&page=100
+
+            //Hardcoded parameters
+            var url = "https://jsonmock.hackerrank.com/api/football_matches?team1goals=1&team2goals=1&year=2011&page=1";
+
+            using (var httpClient = new HttpClient())
+            {
+                HttpResponseMessage response = await httpClient.GetAsync(url);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = await response.Content.ReadAsStringAsync();
+                    var pageResponse = JsonConvert.DeserializeObject<PageResponse>(json);
+
+                    if (pageResponse != null && pageResponse.Data.Any())
+                    {
+
+                    }
+                    else
+                    {
+                        //break; // or throw exception
+                    }
+                }
+                else
+                {
+                    //break; // or throw exception
+                }
+            }
+
             //https://jsonmock.hackerrank.com/api/football_matches?team1goals=1&team2goals=1&year=2011&page=1
             return res;
         }
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            int numDraws = getNumDrawsAsync(2011).Result;
+            Console.WriteLine("Num Draws: " + numDraws);
+
+            Console.ReadKey();
         }
     }
 }
